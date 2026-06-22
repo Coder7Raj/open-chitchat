@@ -1,4 +1,5 @@
 import bcrypt from "bcryptjs";
+import { sendWelcomeEmail } from "../emails/emailHandlers.js";
 import { generateToken } from "../lib/utils.js";
 import User from "../models/user.model.js";
 
@@ -37,7 +38,14 @@ export const signup = async (req, res) => {
 
       const savedUser = await newUser.save();
       generateToken(savedUser._id, res);
-      res.status(201).json({
+
+      sendWelcomeEmail(
+        "alwaysraj733@gmail.com", // Replace with savedUser.email in production
+        username,
+        process.env.CLIENT_URL,
+      ).catch((err) => console.error("Welcome email failed:", err));
+
+      return res.status(201).json({
         _id: savedUser._id,
         username: savedUser.username,
         email: savedUser.email,
