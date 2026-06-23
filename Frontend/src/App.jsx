@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { Toaster } from "react-hot-toast";
 import { Navigate, Route, Routes } from "react-router";
 import PageLoader from "./components/PageLoader.jsx";
 import ChatPage from "./pages/ChatPage.jsx";
@@ -12,7 +13,7 @@ function App() {
     checkAuth();
   }, [checkAuth]);
 
-  console.log("authUser", authUser);
+  // console.log("authUser", authUser);
 
   if (isCheckingAuth) return <PageLoader />;
 
@@ -35,6 +36,8 @@ function App() {
           element={!authUser ? <SignUpPage /> : <Navigate to="/" />}
         />
       </Routes>
+
+      <Toaster />
     </div>
   );
 }
