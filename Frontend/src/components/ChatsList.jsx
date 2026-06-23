@@ -5,13 +5,13 @@ import NoChatsFound from "./NoChatsFound.jsx";
 import UsersLoadingSkeleton from "./UsersLoadingSkeleton.jsx";
 
 export default function ChatsList() {
-  const { getMyChatPartners, chats, isUsersLoading, setSelectedUser } =
+  const { getChatPartners, chats, isUsersLoading, setSelectedUser } =
     useChatStore();
   const { onlineUsers } = useAuthStore();
 
   useEffect(() => {
-    getMyChatPartners();
-  }, [getMyChatPartners]);
+    getChatPartners();
+  }, [getChatPartners]);
 
   if (isUsersLoading) return <UsersLoadingSkeleton />;
   if (chats.length === 0) return <NoChatsFound />;

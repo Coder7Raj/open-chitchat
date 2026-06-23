@@ -1,8 +1,14 @@
+import ActiveTabSwitch from "../components/ActiveTabSwitch.jsx";
 import BorderAnimationContainer from "../components/BorderAnimationContainer.jsx";
-import { useAuthStore } from "../store/useAuthStore.js";
+import ChatContainer from "../components/ChatContainer.jsx";
+import ChatsList from "../components/ChatsList.jsx";
+import ContactList from "../components/ContactList.jsx";
+import NoConversationPlaceholder from "../components/NoChatHistoryPlaceholder.jsx";
+import ProfileHeader from "../components/ProfileHeader.jsx";
+import { useChatStore } from "../store/useChatStore.js";
 
 export default function ChatPage() {
-  const { logout } = useAuthStore();
+  const { activeTab, selectedUser } = useChatStore();
   return (
     <div className="relative w-full max-w-6xl h-[800px]">
       <BorderAnimationContainer>
