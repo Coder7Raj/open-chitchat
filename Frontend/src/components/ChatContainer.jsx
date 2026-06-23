@@ -1,7 +1,10 @@
 import { useEffect, useRef } from "react";
 import { useAuthStore } from "../store/useAuthStore.js";
 import { useChatStore } from "../store/useChatStore.js";
-
+import ChatHeader from "./ChatHeader.jsx";
+import MessageInput from "./MessageInput.jsx";
+import MessagesLoadingSkeleton from "./MessageLoadingSkeleton.jsx";
+import NoChatHistoryPlaceholder from "./NoChatHistoryPlaceholder.jsx";
 export default function ChatContainer() {
   const {
     selectedUser,
