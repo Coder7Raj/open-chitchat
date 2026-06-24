@@ -1,4 +1,5 @@
 import cloudinary from "../lib/cloudinary.js";
+import { getReceiverSocketId, io } from "../lib/socket.js";
 import Message from "../models/message.model.js";
 import User from "../models/user.model.js";
 
@@ -13,35 +14,6 @@ export const getallContacts = async (req, res) => {
   } catch (err) {
     console.error("error in get all contacts controller", err);
     res.status(500).json({ message: "server error" });
-  }
-};
-
-export const getChatPartners = async (req, res) => {
-  try {
-    const loggedInUserId = req.user._id;
-
-    const messages = await Message.find({
-      $or: [{ senderId: loggedInUserId }, { receiverId: loggedInUserId }],
-    });
-
-    const chatPartnerIds = [
-      ...new Set(
-        messages.map((msg) => {
-          return msg.senderId.toString() == loggedInUserId.toString()
-            ? msg.receiverId.toString()
-            : msg.senderId.toString();
-        }),
-      ),
-    ];
-
-    const chatPartners = await User.find({
-      _id: { $in: chatPartnerIds },
-    }).select("-password");
-
-    res.status(200).json(chatPartners);
-  } catch (error) {
-    console.log("error in get chat partners", error);
-    res.status(500).json({ error: "internal server error" });
   }
 };
 
@@ -98,11 +70,43 @@ export const sendMessage = async (req, res) => {
     });
 
     await newMessage.save();
-
+    const receiverSocketId = getReceiverSocketId(receiverId);
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit("newMessage", newMessage);
+    }
     // send msg in realtime
     res.status(201).json(newMessage);
   } catch (err) {
     console.error("error in send message controller", err);
+    res.status(500).json({ error: "internal server error" });
+  }
+};
+
+export const getChatPartners = async (req, res) => {
+  try {
+    const loggedInUserId = req.user._id;
+
+    const messages = await Message.find({
+      $or: [{ senderId: loggedInUserId }, { receiverId: loggedInUserId }],
+    });
+
+    const chatPartnerIds = [
+      ...new Set(
+        messages.map((msg) => {
+          return msg.senderId.toString() == loggedInUserId.toString()
+            ? msg.receiverId.toString()
+            : msg.senderId.toString();
+        }),
+      ),
+    ];
+
+    const chatPartners = await User.find({
+      _id: { $in: chatPartnerIds },
+    }).select("-password");
+
+    res.status(200).json(chatPartners);
+  } catch (error) {
+    console.log("error in get chat partners", error);
     res.status(500).json({ error: "internal server error" });
   }
 };

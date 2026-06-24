@@ -67,8 +67,13 @@ export const useAuthStore = create((set, get) => ({
     try {
       await axiosInstance.post("/auth/logout");
 
-      toast.success("Logged out successfully!");
       get().disconnectSocket();
+      set({
+        authUser: null,
+        socket: null,
+        onlineUsers: [],
+      });
+      toast.success("Logged out successfully!");
     } catch (error) {
       toast.error("Error logging out!");
       console.log("logout error", error);
@@ -76,7 +81,7 @@ export const useAuthStore = create((set, get) => ({
   },
   updateProfile: async (data) => {
     try {
-      const res = await axiosInstance.put("/auth/update-profile", data);
+      const res = await axiosInstance.put("/auth/update_profile", data);
       set({ authUser: res.data });
       toast.success("Profile updated successfully");
     } catch (error) {
@@ -99,11 +104,16 @@ export const useAuthStore = create((set, get) => ({
 
     // listen for online users event
     socket.on("getOnlineUsers", (userIds) => {
+      // console.log("online users", userIds);
       set({ onlineUsers: userIds });
     });
   },
 
   disconnectSocket: () => {
-    if (get().socket?.connected) get().socket.disconnect();
+    const socket = get().socket;
+
+    if (socket) {
+      socket.disconnect();
+    }
   },
 }));

@@ -19,7 +19,7 @@ export default function ChatContainer() {
   const messageEndRef = useRef(null);
 
   useEffect(() => {
-    getMessagesByUserId(selectedUser._id);
+    getMessagesByUserId(selectedUser._id.toString());
     subscribeToMessages();
 
     // clean up
@@ -78,7 +78,7 @@ export default function ChatContainer() {
         ) : isMessagesLoading ? (
           <MessagesLoadingSkeleton />
         ) : (
-          <NoChatHistoryPlaceholder name={selectedUser.fullName} />
+          <NoChatHistoryPlaceholder name={selectedUser.username} />
         )}
       </div>
 
