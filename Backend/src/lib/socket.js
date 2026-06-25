@@ -5,6 +5,7 @@ import express from "express";
 import http from "http";
 import { Server } from "socket.io";
 import { socketAuthMiddleware } from "../middlewares/socket.auth.middleware.js";
+import User from "../models/user.model.js";
 
 // Create ONE express app
 const app = express();
@@ -44,14 +45,20 @@ io.on("connection", (socket) => {
   // Send online users to everyone
   io.emit("getOnlineUsers", Object.keys(userSocketMap));
 
-  socket.on("disconnect", () => {
-    // console.log("A user disconnected:", socket.user?.username);
+  socket.on("disconnect", async () => {
+    try {
+      if (userId) {
+        delete userSocketMap[userId];
 
-    if (userId) {
-      delete userSocketMap[userId];
+        await User.findByIdAndUpdate(userId, {
+          lastSeen: new Date(),
+        });
+      }
+
+      io.emit("getOnlineUsers", Object.keys(userSocketMap));
+    } catch (error) {
+      console.error("Disconnect error:", error);
     }
-
-    io.emit("getOnlineUsers", Object.keys(userSocketMap));
   });
 });
 
