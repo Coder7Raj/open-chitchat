@@ -1,7 +1,9 @@
+import { signInWithPopup } from "firebase/auth";
 import toast from "react-hot-toast";
 import { io } from "socket.io-client";
 import { create } from "zustand";
 import { axiosInstance } from "../lib/axios.js";
+import { auth, googleProvider } from "../lib/firebase.js";
 
 const BASE_URL =
   import.meta.env.MODE === "development" ? "http://localhost:3000" : "/";
@@ -13,6 +15,7 @@ export const useAuthStore = create((set, get) => ({
   isLogingIn: false,
   socket: null,
   onlineUsers: [],
+  isGoogleLoading: false,
 
   checkAuth: async () => {
     try {
@@ -60,6 +63,36 @@ export const useAuthStore = create((set, get) => ({
       );
     } finally {
       set({ isLogingIn: false });
+    }
+  },
+
+  googleLogin: async () => {
+    set({ isGoogleLoading: true });
+
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+
+      const firebaseToken = await result.user.getIdToken();
+
+      const res = await axiosInstance.post("/auth/google_provider", {
+        token: firebaseToken,
+      });
+
+      set({
+        authUser: res.data,
+      });
+
+      toast.success("Logged in with Google!");
+
+      get().connectSocket();
+    } catch (error) {
+      console.error(error);
+
+      toast.error(error.response?.data?.message || "Google login failed");
+    } finally {
+      set({
+        isGoogleLoading: false,
+      });
     }
   },
 

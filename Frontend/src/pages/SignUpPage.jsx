@@ -16,7 +16,7 @@ export default function SignUpPage() {
     email: "",
     password: "",
   });
-  const { signup, isSigningUp } = useAuthStore();
+  const { signup, isSigningUp, isGoogleLoading, googleLogin } = useAuthStore();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -106,6 +106,21 @@ export default function SignUpPage() {
                       <LoaderIcon className="w-full h-5 animate-spin text-center" />
                     ) : (
                       "Create Account"
+                    )}
+                  </button>
+                  <span className="flex items-center justify-center text-center text-white py-3 m-0">
+                    Or
+                  </span>
+                  <button
+                    type="button"
+                    onClick={googleLogin}
+                    disabled={isGoogleLoading}
+                    className="auth-btn m-0"
+                  >
+                    {isGoogleLoading ? (
+                      <LoaderIcon className="w-full h-5 animate-spin text-center" />
+                    ) : (
+                      "Continue with Google"
                     )}
                   </button>
                 </form>

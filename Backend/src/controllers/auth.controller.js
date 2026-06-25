@@ -1,6 +1,8 @@
 import bcrypt from "bcryptjs";
+import { getAuth } from "firebase-admin/auth";
 import { sendWelcomeEmail } from "../emails/emailHandlers.js";
 import cloudinary from "../lib/cloudinary.js";
+import "../lib/firebaseAdmin.js";
 import { generateToken } from "../lib/utils.js";
 import User from "../models/user.model.js";
 
@@ -110,5 +112,37 @@ export const updateProfile = async (req, res) => {
   } catch (err) {
     console.error("error in update profile controller", err);
     res.status(500).json({ message: "internal server error" });
+  }
+};
+
+export const googleAuth = async (req, res) => {
+  try {
+    const { token } = req.body;
+
+    const decodedToken = await getAuth().verifyIdToken(token);
+
+    const { uid, email, name, picture } = decodedToken;
+
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      user = await User.create({
+        username: name,
+        email,
+        profilePic: picture,
+        authProvider: "google",
+        googleId: uid,
+      });
+    }
+
+    generateToken(user._id, res);
+
+    return res.status(200).json(user);
+  } catch (error) {
+    console.error("google auth error controller", error);
+
+    return res.status(401).json({
+      message: "Invalid Google token",
+    });
   }
 };

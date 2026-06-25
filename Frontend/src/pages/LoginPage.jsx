@@ -11,7 +11,7 @@ import { useAuthStore } from "../store/useAuthStore.js";
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({ email: "", password: "" });
-  const { login, isLoggingIn } = useAuthStore();
+  const { login, isLoggingIn, isGoogleLoading, googleLogin } = useAuthStore();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -85,6 +85,23 @@ export default function LoginPage() {
                       <LoaderIcon className="w-full h-5 animate-spin text-center" />
                     ) : (
                       "Sign In"
+                    )}
+                  </button>
+                  <br />
+                  <span className="flex items-center justify-center text-center text-white">
+                    Or
+                  </span>
+                  <br />
+                  <button
+                    type="button"
+                    onClick={googleLogin}
+                    disabled={isGoogleLoading}
+                    className="auth-btn"
+                  >
+                    {isGoogleLoading ? (
+                      <LoaderIcon className="w-full h-5 animate-spin text-center" />
+                    ) : (
+                      "Continue with Google"
                     )}
                   </button>
                 </form>

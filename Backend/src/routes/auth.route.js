@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  googleAuth,
   login,
   logout,
   signup,
@@ -14,6 +15,7 @@ router.use(arcjetProtection);
 
 router.post("/signup", signup);
 router.post("/login", login);
+router.post("/google_provider", googleAuth);
 router.post("/logout", logout);
 
 router.put("/update_profile", protectRoute, updateProfile);
