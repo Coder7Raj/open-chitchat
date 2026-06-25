@@ -36,8 +36,11 @@ export default function ProfileHeader() {
             >
               <img
                 src={selectedImg || authUser.profilePic || "/avatar.png"}
-                alt="User image"
+                alt={authUser.username}
                 className="size-full object-cover"
+                onError={(e) => {
+                  e.target.src = "/avatar.png";
+                }}
               />
               <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
                 <span className="text-white text-xs">Change</span>
@@ -56,7 +59,9 @@ export default function ProfileHeader() {
           {/* USERNAME & ONLINE TEXT */}
           <div>
             <h3 className="text-slate-200 font-medium text-base max-w-[180px] truncate">
-              {authUser.username}
+              {authUser.username.length > 12
+                ? authUser.username.slice(0, 12) + "..."
+                : authUser.username}
             </h3>
 
             <p className="text-slate-400 text-xs">Online</p>

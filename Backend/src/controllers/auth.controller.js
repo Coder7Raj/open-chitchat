@@ -126,10 +126,20 @@ export const googleAuth = async (req, res) => {
     let user = await User.findOne({ email });
 
     if (!user) {
+      let profilePicUrl = "";
+
+      if (picture) {
+        const uploadRes = await cloudinary.uploader.upload(picture, {
+          folder: "openchitchat/avatars",
+        });
+
+        profilePicUrl = uploadRes.secure_url;
+      }
+
       user = await User.create({
         username: name,
         email,
-        profilePic: picture,
+        profilePic: profilePicUrl,
         authProvider: "google",
         googleId: uid,
       });
