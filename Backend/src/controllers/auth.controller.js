@@ -43,7 +43,7 @@ export const signup = async (req, res) => {
       generateToken(savedUser._id, res);
 
       sendWelcomeEmail(
-        "alwaysraj733@gmail.com", // Replace with savedUser.email in production
+        email, // Replace with savedUser.email in production
         username,
         process.env.CLIENT_URL,
       ).catch((err) => console.error("Welcome email failed:", err));

@@ -10,21 +10,21 @@ export const socketAuthMiddleware = async (socket, next) => {
       ?.split("=")[1];
 
     if (!token) {
-      console.log("Socket connection rejected: No token provided");
+      // console.log("Socket connection rejected: No token provided");
       return next(new Error("Unauthorized - No Token Provided"));
     }
 
     // verify the token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     if (!decoded) {
-      console.log("Socket connection rejected: Invalid token");
+      // console.log("Socket connection rejected: Invalid token");
       return next(new Error("Unauthorized - Invalid Token"));
     }
 
     // find the user fromdb
     const user = await User.findById(decoded.userId).select("-password");
     if (!user) {
-      console.log("Socket connection rejected: User not found");
+      // console.log("Socket connection rejected: User not found");
       return next(new Error("User not found"));
     }
 
