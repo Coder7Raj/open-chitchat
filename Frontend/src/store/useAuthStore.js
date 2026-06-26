@@ -6,7 +6,9 @@ import { axiosInstance } from "../lib/axios.js";
 import { auth, googleProvider } from "../lib/firebase.js";
 
 const BASE_URL =
-  import.meta.env.MODE === "development" ? "http://localhost:3000" : "/";
+  import.meta.env.MODE === "development"
+    ? "http://localhost:3000"
+    : import.meta.env.VITE_API_URL.replace("/api", "");
 
 export const useAuthStore = create((set, get) => ({
   authUser: null,
