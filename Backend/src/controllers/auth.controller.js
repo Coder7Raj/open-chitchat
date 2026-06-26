@@ -89,8 +89,17 @@ export const login = async (req, res) => {
 };
 
 export const logout = async (_, res) => {
-  res.cookie("jwt", "", { maxAge: 0 });
-  return res.status(200).json({ message: "Logged out successfully" });
+  const isProduction = process.env.NODE_ENV === "production";
+
+  res.clearCookie("jwt", {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
+  });
+
+  return res.status(200).json({
+    message: "Logged out successfully",
+  });
 };
 
 export const updateProfile = async (req, res) => {

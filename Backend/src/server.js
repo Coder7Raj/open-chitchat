@@ -13,6 +13,8 @@ import messageRoutes from "./routes/message.route.js";
 
 const PORT = process.env.PORT || 4000;
 
+app.set("trust proxy", 1);
+
 app.use(express.json({ limit: "5mb" }));
 
 app.use(
@@ -27,7 +29,17 @@ app.use(cookieParser());
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
 
-server.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-  connectDB();
-});
+const startServer = async () => {
+  try {
+    await connectDB();
+
+    server.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error("Failed to start server:", error);
+    process.exit(1);
+  }
+};
+
+startServer();

@@ -4,11 +4,16 @@ import User from "../models/user.model.js";
 export const socketAuthMiddleware = async (socket, next) => {
   try {
     // extract token from http-only cookies
-    const token = socket.handshake.headers.cookie
-      ?.split("; ")
+    const cookie = socket.handshake.headers.cookie;
+
+    if (!cookie) {
+      return next(new Error("Unauthorized"));
+    }
+
+    const token = cookie
+      .split("; ")
       .find((row) => row.startsWith("jwt="))
       ?.split("=")[1];
-
     if (!token) {
       // console.log("Socket connection rejected: No token provided");
       return next(new Error("Unauthorized - No Token Provided"));

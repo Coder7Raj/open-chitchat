@@ -1,7 +1,8 @@
 import jwt from "jsonwebtoken";
 
 export const generateToken = (userId, res) => {
-  const { JWT_SECRET } = process.env;
+  const { JWT_SECRET, NODE_ENV } = process.env;
+
   if (!JWT_SECRET) {
     throw new Error("JWT_SECRET is not defined in environment variables");
   }
@@ -10,11 +11,13 @@ export const generateToken = (userId, res) => {
     expiresIn: "7d",
   });
 
+  const isProduction = NODE_ENV === "production";
+
   res.cookie("jwt", token, {
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 7days
+    maxAge: 7 * 24 * 60 * 60 * 1000,
     httpOnly: true,
-    sameSite: "strict",
-    secure: process.env.NODE_ENV === "production" ? true : false,
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
   });
 
   return token;
