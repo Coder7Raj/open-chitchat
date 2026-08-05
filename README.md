@@ -12,7 +12,7 @@ A modern real-time chat application built with the MERN ecosystem, Firebase Auth
 https://openchitchat-8b3f4.web.app/
 
 ### Backend API
-https://open-chitchat-production.up.railway.app/
+https://open-chitchat.onrender.com/
 
 ---
 
