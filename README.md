@@ -16,6 +16,13 @@ https://open-chitchat.onrender.com/
 
 ---
 
+## 🚧 Project Status
+
+This project is currently under active development.
+
+The core application is implemented and deployed, while development continues with performance improvements, testing, refinement, and additional production-level enhancements. New features and architectural improvements may be introduced as the project evolves.
+
+
 # 📖 Description
 
 OpenChitChat is a full-stack real-time messaging platform designed with scalability, security, and modern development practices in mind.
